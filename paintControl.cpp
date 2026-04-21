@@ -1,108 +1,64 @@
 #include "common.hpp"
 
-std::vector<std::string> chunk;
-std::string whereami[(MAX_DRAW_X*MAX_DRAW_Y) + 1];
+
+tile whereami[(MAX_DRAW_X*MAX_DRAW_Y) + 1];
 
 std::vector<std::string> shakie;
 
 // coordinates
-int x = 0, y = 0;
 int final = 0, pfinal = 0;
-
-                                                                                    // gets random character
-std::string randomfloorchar() {                                //_-|\\/#&$^&*
-    std::random_device rd;
-    std::mt19937 gen(rd()); // this is what it is seeded by
-    std::uniform_real_distribution<> dist(0, 12); // range 
-    int result = dist(gen);
-    //std::cout << result << " ";
-
-    if (result <= 12) {
-        return "\033[2;32m.\033[0m";
-    }
-    return "\0";
-}
-
-std::string paintObject(int input) {                                //_-|\\/#
-    //std::cout << result << " ";
-
-    if (input >= 150) {
-        return "\033[1;32m#\033[0m";
-    }
-    return "\0";
-}
-
-void paintObjects() {
-    std::random_device rd;
-    std::mt19937 gen(rd()); // this is what it is seeded by
-    std::uniform_int_distribution<> dist(0, 151); // range
-    int incr = 0;
-    for (int i = 0; i < MAX_DRAW_Y; i++) {
-        for (int a = 0; a < MAX_DRAW_X; a++) {
-                std::string result = paintObject(dist(gen));
-                if (result != "\0") {
-                    chunk[incr + a] = result;
-                }  
-        }
-        incr += MAX_DRAW_X;
-    }
-}
                                                                                     // makes randomised chunk
-bool randomchunk() {
-    //int line = 1;
-    std::string lines = "";
-    //int incr = 0;
-    for (int i = 0; i < MAX_DRAW_Y; i++) {
-        for (int a = 0; a < MAX_DRAW_X; a++) {
-            chunk.push_back(randomfloorchar());
-            if ((a >= 2 && i != 0)) {
-                //std::cout << incr;
-                //if (!ischarfloorvalid(chunk[(incr + a) - 1], chunk[incr + a])) { // have to minus two as otherwise its reading \0
-                    //std::cout << "invalid\n";
-                   // lines.erase(incr + a);
-                 //   a--;
-              //  }
-            }
-            //std::cout << lines;
-        }
-        //chunk.push_back("\n"); // this is fine for now
-        //std::cout << lines;
-        //incr += MAX_DRAW_X-1;
-    }
-    //chunk.push_back(lines);
-    //std::cout << lines;
-    //paintPlayer();
-    paintObjects();
-    return true;
-}
 
 
 void paintchunk(int clear = 0) {
     //std::cout << "\033[44m";
     std::cout << "\033[3J\033[H";
     //std::cout << "\r" <<  "\033[2J\033[1;1H";
-    for (int i = 0; i < chunk.size(); i++)
-    {
-        if (i > 0 && (i % (MAX_DRAW_X)) == 0) {
-            std::cout << (clear, ' ') <<"\n";
-        }
-        //std::cout << std::flush << chunk[i];
-        std::cout << " " << whereami[i] << std::flush;
+
+        std::string border = "\033[1m+";
+
+    for (int i = 0; i <= MAX_DRAW_X-1; i++) {
+        //std::cout << "\r" << "-" << std::flush;
+        border += "--";
+
     }
-    std::cout << (clear, ' ') << "\n" << chunk.size() << "\n";
-    std::cout << (clear, ' ') << "\n" << MAX_DRAW_X*MAX_DRAW_Y << "\n";
+    std::cout << "\r" << border << "+\033[0m\n" << std::flush;
+
+    for (int i = 0; i <= (MAX_DRAW_X * MAX_DRAW_Y); i++)
+    {
+        //if (i / MAX_DRAW_X > MAX_DRAW_Y) std::cerr << "y is out of bounds\n"; return;
+        if (i > 0 && (i % MAX_DRAW_X) == 0) {
+            //std::cout << (clear, ' ') <<"\n";
+            std::cout << "\033[1m|\033[0m" <<"\n" << "\033[1m|\033[0m";
+        }
+        if (i == 0) {
+            std::cout << "\033[1m|\033[0m" << std::flush;
+        }
+        //std::cout << " " << chunk[i].display << std::flush;
+        std::cout << " " << whereami[i].display << std::flush;          //this fine
+    }
+    std::cout << "\r" << border << "+\033[0m" << std::flush;
+    //std::cout << (clear, ' ') << "\n" << chunk.size() << "\n";
+    //std::cout << (clear, ' ') << "\n" << MAX_DRAW_X*MAX_DRAW_Y << "\n";
+    //std::cout << "\nMAX_DRAW_X: " << MAX_DRAW_X << "\n MAX_DRAW_Y: " << MAX_DRAW_Y << "\n";
+    std::cout << "\nhealth: " << playerinfo.currentship->health << "\n Fuel: " << playerinfo.currentship->fuel << "\n";
+    std::cout << "\n\n\n\n\n";
 }
 
-void paintPlayer(int shfR) {
-    for (int i = 0; i < (MAX_DRAW_X*MAX_DRAW_Y); i++)
+void paintPlayer(int shfR) { 
+    tile playerTile = {"\033[1;33m@\033[0m", false, &Tproperties};
+    
+
+    for (int i = 0; i < (MAX_DRAW_X * MAX_DRAW_Y); i++)
     {
         whereami[i] = chunk[i];
     }
     //whereami[0] = (((MAX_DRAW_X+1)*MAX_DRAW_Y), 'A');
-    final = x + (y*(MAX_DRAW_X));
+    final = playerinfo.pos.x + (playerinfo.pos.y * MAX_DRAW_X);
 
     if (final >= 0 && final < (MAX_DRAW_X * MAX_DRAW_Y)) {
-        whereami[final] = "\033[1;33m@\033[0m";
+        //whereami[final] = "\033[1;33m@\033[0m";
+        whereami[final] = playerTile;
         pfinal = final;
     }
     paintchunk(shfR);
@@ -128,7 +84,7 @@ void screenshift(int severity) {
             std::cout << "\n" << (severity, " ");
         }
         //std::cout << std::flush << chunk[i];
-        std::cout << whereami[i];
+        //std::cout << whereami[i];
     }
     for (int i = 0; i <= MAX_DRAW_Y; i++) {
         std::cout << "\033[F";
@@ -147,9 +103,15 @@ void screenshake() {
     
 }
 
-void paintstart() {
-    if(!randomchunk()) return;
+void paintscreen() {
+    std::cout << "\033[3J\033[H";
+    paintPlayer();
+}
+
+bool paintstart() {
+    if(!randomchunk()) return false;
     hidecursor();
     //paintchunk();
-    paintPlayer();
+    paintscreen();
+    return true;
 }

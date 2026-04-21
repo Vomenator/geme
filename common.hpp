@@ -15,21 +15,18 @@
 // fill array
 #include <algorithm>
 
+#include "entity.hpp"
+#include "tiles.hpp"
+
+// --sectorScreenDimesions--
 #define MAX_DRAW_X 32
 #define MAX_DRAW_Y 32
 
 
-// --extern--
+// object structures
 
-// coordinates
 
-typedef struct vector {
-    int x = 0;
-    int y = 0;
-} vector;
-
-extern int x, y;
-extern int final, pfinal;
+//------------------------- boiler plate stuff ----------------------------
 
 inline bool ischarfloorvalid(std::string previous, std::string input) {   //_-|\\/#
     if (previous == "\n") return true;
@@ -44,10 +41,34 @@ inline bool ischarfloorvalid(std::string previous, std::string input) {   //_-|\
     return true;
 }
 
+
+inline int genrandomNum(int max) {
+    std::random_device rd;
+    std::mt19937 gen(rd()); // this is what it is seeded by
+    std::uniform_int_distribution<> dist(0, max); // range
+    return dist(gen);
+}
 // forward declarations
 
-void paintstart();
+int entryPoint();
+
+bool paintstart();
 void paintPlayer(int shfR = 0);
 
 
 void screenshake();
+
+
+// --extern--
+
+extern int final, pfinal;
+
+// --entity info--
+
+// -- tiles.cpp
+//extern tile randomfloorchar();
+//extern tile paintObject(int input);
+
+//-- chunkGeneration.cpp --
+extern bool randomchunk();
+extern bool ishealthgood();

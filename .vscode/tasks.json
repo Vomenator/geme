@@ -11,7 +11,10 @@
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
                 "-static",
                 "${fileDirname}\\main.cpp",
-                "${fileDirname}\\paintControl.cpp"
+                "${fileDirname}\\paintControl.cpp",
+                "${fileDirname}\\entity.cpp",
+                "${fileDirname}\\startgame.cpp",
+                "${fileDirname}\\chunkGeneration.cpp"
             ],
             "options": {
                 "cwd": "C:/msys64/ucrt64/bin"
