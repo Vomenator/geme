@@ -1,4 +1,5 @@
 #include "common.hpp"
+#include "tiles.hpp"
 
 // -- BackoundRarity --
 #define BACKGROUND_RARITY 1000
@@ -28,10 +29,15 @@ tile randomfloorchar() {                                //_-|\\/#&$^&*
 tile paintObject(int input) {                                //_-|\\/#
     //std::cout << result << " ";
 
-    if (input >= 13000) {
-        return {"\033[90m#\033[0m", true};
-    }
-    return {"\0", true};
+    if (input >= 14900) {
+        //return {"\033[90m#\033[0m", true};
+        tile temp;
+        asteroid::tinyasteroid* tin = new asteroid::tinyasteroid();
+        tin->Onspawn(temp);
+        objects* obj = static_cast<objects*>(temp.Otherproperties);
+        temp.Otherproperties = tin;
+        return temp;
+    }    return {"\0", true};
 }
 
 // -- paint objects onto chunk
@@ -48,6 +54,15 @@ void paintObjects() {
         }
         incr += MAX_DRAW_X;
     }
+    /*int objectcount = 0;
+    for (int i = 0; i < chunk.size(); i++) {
+        if (chunk[i].Otherproperties != nullptr) {
+            objectcount++;
+            std::cout << "object at chunk[" << i << "]\n";
+        }
+    }
+    std::cout << "total objects: " << objectcount << "\n";
+    std::cin.get(); // pause so you can read it */
 }
 
 // --generate single chunk--

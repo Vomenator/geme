@@ -12,7 +12,6 @@
                 "-static",
                 "${fileDirname}\\main.cpp",
                 "${fileDirname}\\paintControl.cpp",
-                "${fileDirname}\\entity.cpp",
                 "${fileDirname}\\startgame.cpp",
                 "${fileDirname}\\chunkGeneration.cpp"
             ],

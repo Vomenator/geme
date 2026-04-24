@@ -1,30 +1,6 @@
 #pragma once
-#include <iostream>
-#include <string>
-//#include <cstdlib>
-#include <vector>
-#include <thread>
-
-// this gets keyboard input
-#include <windows.h>
-
-// for future seeding
-#include <random>
-#include <vector>
-
-// fill array
-#include <algorithm>
-
-#include "entity.hpp"
+#include "basetypes.hpp"
 #include "tiles.hpp"
-
-// --sectorScreenDimesions--
-#define MAX_DRAW_X 32
-#define MAX_DRAW_Y 32
-
-
-// object structures
-
 
 //------------------------- boiler plate stuff ----------------------------
 
@@ -51,10 +27,13 @@ inline int genrandomNum(int max) {
 // forward declarations
 
 int entryPoint();
-
+void doturn();
 bool paintstart();
-void paintPlayer(int shfR = 0);
+void paintscreen();
+void dontupdatemepaint();
+//void paintPlayer(int shfR = 0);
 
+void paintprojectile(int targetX, int targetY);
 
 void screenshake();
 
@@ -62,6 +41,11 @@ void screenshake();
 // --extern--
 
 extern int final, pfinal;
+
+extern properties Tproperties;
+extern std::vector<tile> chunk;
+extern std::vector<tile> whereami;
+
 
 // --entity info--
 

@@ -1,8 +1,13 @@
 #pragma once
-#include "tiles.hpp"
+#include "basetypes.hpp"
 
-struct player : properties {
+struct entity : properties {
+};
+
+struct player : entity {
+    bool ifalreadylock = false;
     static Fvector pos;
+    static int credits;
     ship::shiptype* currentship = nullptr;
 
     int consumefuel() {
@@ -17,10 +22,19 @@ struct player : properties {
         }
         return 0;
     }
+    void changeisalreadylock() {
+        ifalreadylock = !ifalreadylock;
+        ifalreadylock = ifalreadylock ? true : false;
+    }
+    bool checkifplayerlocks() {
+        return ifalreadylock;
+    }
     virtual ~player() = default;
 };
+
 
 
 // --externs--
 
 extern player playerinfo;
+extern entity entityinfo;
